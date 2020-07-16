@@ -36,9 +36,10 @@
         <tbody>
             @foreach (var game in Model.GameModels)
             {
+                @(id = id + 1)
                 <tr>
                     <td style="width: 20%">
-                        @(id + 1)
+                        @id
                     </td>
                     <td style="width: 50%">
                         @game.Name
