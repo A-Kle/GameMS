@@ -22,9 +22,9 @@ namespace GamesMS.Main
         public void ConfigureServices(IServiceCollection services)
         {
             DependencyResolver.Resolve(services);
-            services.AddControllersWithViews();
             var assembly = Assembly.Load("GamesMS.Api");
-            services.AddMvc().AddApplicationPart(assembly).AddControllersAsServices();
+            services.AddControllersWithViews();
+            services.AddMvc().AddApplicationPart(assembly).AddControllersAsServices().AddRazorRuntimeCompilation();
             services.Configure<DefaultConfiguration>(Configuration.GetSection("DBConnection"));
         }
 

@@ -1,34 +1,73 @@
 ﻿@model GamesMS.ViewModels.BoardGameCreateUpdateViewModel
 @{
-    //Layout.Append()
+    <style>
+        .form-group label{
+            font-weight: 700;
+        }
+
+        input.input-validation-error,
+        select.input-validation-error {
+            border: 1px solid red;
+        }
+
+        .field-validation-error
+        {
+            color: red;
+        }
+    </style>
 }
 
-<div class="text-center">
-    @using (Html.BeginForm("Create", "BoardGames", FormMethod.Post))
+<div>
+    @using (Html.BeginForm("Create", "BoardGames", FormMethod.Post, new { novalidate = true, id = "create-form" }))
     {
-        <div>
+        <div class="form-group">
             @Html.LabelFor(model => model.Name, "Name")
-            @Html.TextBoxFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name, "", new { @class = "form-control", maxlength = 255 })
             @Html.ValidationMessageFor(model => model.Name)
         </div>
 
-        <div>
-            @Html.LabelFor(model => model.MinPlayerAge, "Minimum players age")
-            @Html.TextBoxFor(model => model.MinPlayerAge)
+        <div class="form-group">
+            @Html.LabelFor(model => model.MinPlayerAge, "Minimum player age")
+            @Html.TextBoxFor(model => model.MinPlayerAge, "", new { @class = "form-control numeric-validable", @type = "number", @min = "1", @max = "150" })
             @Html.ValidationMessageFor(model => model.MinPlayerAge)
         </div>
 
-        <div>
+        <div class="form-group">
             @Html.LabelFor(model => model.MaxPlayersNumber, "Maximum players number")
-            @Html.TextBoxFor(model => model.MaxPlayersNumber)
+            @Html.TextBoxFor(model => model.MaxPlayersNumber, "", new { @class = "form-control numeric-validable", @type = "number", @min = "1", @max = "1000" })
             @Html.ValidationMessageFor(model => model.MaxPlayersNumber)
         </div>
 
-        <div>
+        <div class="form-group">
             @Html.LabelFor(model => model.MinPlayersNumber, "Minimum players number")
-            @Html.TextBoxFor(model => model.MinPlayersNumber)
+            @Html.TextBoxFor(model => model.MinPlayersNumber, "", new { @class = "form-control numeric-validable", @type = "number", @min = "1", @max = "1000" })
             @Html.ValidationMessageFor(model => model.MinPlayersNumber)
         </div>
-        <button type="submit">Create</button>
+
+        <div>
+            <button class="btn btn-light" type="submit">Create</button>
+        </div>
     }
 </div>
+
+<footer>
+    <script type="text/javascript">
+        $(function () {
+            $('.numeric-validable').on('input', function () {
+                debugger;
+                var value = parseInt($(this).val(), 0);
+                var min = parseInt($(this).attr('min'), 0);
+                var max = parseInt($(this).attr('max'), 0);
+
+                if (isNaN(value))
+                    $(this).val(min);
+
+                if (value > max)
+                    $(this).val(max);
+
+                if (value < min)
+                    $(this).val(min);
+            });
+        });
+    </script>
+</footer>

@@ -17,7 +17,7 @@ namespace GamesMS.Records
         public GameStatisticMapping()
         {
             Table("GamesMS_Records_GameStatisticRecord");
-            Id(g => g.Id).GeneratedBy.Identity();
+            Id(g => g.Id).GeneratedBy.Identity(); //due to the record type and usage this could be replaced with guid or other generated string, to avoid unlimited incremental
             References(x => x.Game, "GameId");
             Map(g => g.ViewedDate);
             Map(g => g.Source);

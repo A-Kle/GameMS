@@ -30,6 +30,7 @@ namespace GamesMS.Controllers
             var model = new GamesIndexViewModel()
             {
                 PageNumber = pageNumber ?? 1,
+                PageSize = pageSize ?? 10,
                 GameModels = gameRepository.QueryOver(pageNumber ?? 1, pageSize ?? 10)
                 .Select(g => new GamesModel() { Id = g.Id, Name = g.Name })
                 .ToList()
@@ -56,6 +57,7 @@ namespace GamesMS.Controllers
                 MaxPlayersNumber = game.MaxPlayersNumber,
                 MinPlayersNumber = game.MinPlayersNumber,
                 Statistics = game.Statistics
+                    .Take(10)
                     .Select(s => new GameStatisticViewModel() { Source = s.Source.GetAttribute<DisplayAttribute>().Name, ViewedDate = s.ViewedDate })
                     .ToList()
             };
@@ -66,6 +68,13 @@ namespace GamesMS.Controllers
         private void UpdateStatistics(BoardGameRecord boardGameRecord)
         {
             var statisticsRecord = new GameStatisticRecord() { Game = boardGameRecord, Source = Models.EntityViewSource.Application, ViewedDate = DateTime.Now };
+
+            var statistics = gameStatisticRepository.Query().ToList();
+
+            if(statistics.Count() > 10)
+            {
+                gameStatisticRepository.Delete(statistics.Last());
+            }
 
             gameStatisticRepository.CreateOrUpdate(statisticsRecord);
         }
@@ -103,7 +112,7 @@ namespace GamesMS.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update(int id)
+        public IActionResult Edit(int id)
         {
             var game = gameRepository.Get(id);
 
@@ -123,7 +132,7 @@ namespace GamesMS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(int id, string param)
+        public async Task<IActionResult> Edit(int id, string param)
         {
             var game = gameRepository.Get(id);
 
