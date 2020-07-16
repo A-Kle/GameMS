@@ -17,6 +17,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\words.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\words.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GamesMS\GamesMS.csproj" />
   </ItemGroup>
 

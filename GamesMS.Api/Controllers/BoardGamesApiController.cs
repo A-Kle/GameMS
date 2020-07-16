@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GamesMS.Api.Models;
+using GamesMS.Api.Services;
 using GamesMS.Records;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,12 +16,14 @@ namespace GamesMS.Api.Controllers
         private readonly ILogger<BoardGamesApiController> _logger;
         private readonly IBoardGameRepository boardGameRepository;
         private readonly IGameStatisticRepository gameStatisticRepository;
+        private readonly IRandomNameGeneratorService randomNameGeneratorService;
 
-        public BoardGamesApiController(ILogger<BoardGamesApiController> logger, IBoardGameRepository boardGameRepository, IGameStatisticRepository gameStatisticRepository)
+        public BoardGamesApiController(ILogger<BoardGamesApiController> logger, IBoardGameRepository boardGameRepository, IGameStatisticRepository gameStatisticRepository, IRandomNameGeneratorService randomNameGeneratorService)
         {
             _logger = logger;
             this.boardGameRepository = boardGameRepository;
             this.gameStatisticRepository = gameStatisticRepository;
+            this.randomNameGeneratorService = randomNameGeneratorService;
         }
 
         [HttpGet("Get/{total}")]
@@ -52,6 +55,12 @@ namespace GamesMS.Api.Controllers
                 MinPlayersNumber = game.MinPlayersNumber,
                 Name = game.Name
             };
+        }
+
+        [HttpGet("GenerateRandomName")]
+        public ActionResult<string> GenerateRandomName()
+        {
+            return randomNameGeneratorService.GenerateName(50, GenerationMode.Mixed);
         }
 
         private void UpdateStatistics(BoardGameRecord boardGameRecord)

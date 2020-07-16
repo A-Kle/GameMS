@@ -23,6 +23,7 @@
             @Html.LabelFor(model => model.Name, "Name")
             @Html.TextBoxFor(model => model.Name, "", new { @class = "form-control", maxlength = 255 })
             @Html.ValidationMessageFor(model => model.Name)
+            <a style="float:right" class="btn btn-light" onclick="generateRandomName()" href="">Generate random name</a>
         </div>
 
         <div class="form-group">
@@ -51,6 +52,16 @@
 
 <footer>
     <script type="text/javascript">
+        function generateRandomName() {
+            event.preventDefault();
+
+            $.get("/BoardGamesApi/GenerateRandomName")
+                .done(function (data) {
+                    debugger;
+                    $('#Name').val(data);
+                });;
+        }
+
         $(function () {
             $('.numeric-validable').on('input', function () {
                 debugger;
