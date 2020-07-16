@@ -25,10 +25,10 @@
                 <th style="width: 20%">
                     Id
                 </th>
-                <th style="width: 40%">
+                <th style="width: 50%">
                     Name
                 </th>
-                <th style="width: 40%">
+                <th style="width: 30%;min-width: 300px;">
                     Actions
                 </th>
             </tr>
@@ -43,7 +43,7 @@
                     <td style="width: 50%">
                         @game.Name
                     </td>
-                    <td style="width: 30%" class="actions">
+                    <td style="width: 30%;min-width: 300px;" class="actions">
                         <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@game.Id">Edit</a>
                         <a class="btn btn-secondary" asp-action="Details" asp-route-id="@game.Id">Details</a>
                         <a class="btn btn-secondary" onclick="deleteGame(@game.Id)" href="">Delete</a>
