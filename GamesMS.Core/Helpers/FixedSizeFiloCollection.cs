@@ -22,9 +22,10 @@ namespace GamesMS.Core.Helpers
             else
             {
                 if(size != 0)
+                {
                     Items.RemoveAt(size - 1);
-
-                Items.Insert(0, obj);
+                    Items.Insert(0, obj);
+                }
             }
         }
 
