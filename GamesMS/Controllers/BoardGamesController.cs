@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System;
 using GamesMS.Core.Helpers;
 using System.ComponentModel.DataAnnotations;
+using GamesMS.Data.Services;
+using GamesMS.Data.Models;
 
 namespace GamesMS.Controllers
 {
@@ -14,13 +16,15 @@ namespace GamesMS.Controllers
     {
         private readonly ILogger<BoardGamesController> _logger;
         private readonly IBoardGameRepository gameRepository;
-        private readonly IGameStatisticRepository gameStatisticRepository;
+        private readonly IGameStatisticsService gameStatisticsService;
 
-        public BoardGamesController(ILogger<BoardGamesController> logger, IBoardGameRepository gameRepository, IGameStatisticRepository gameStatisticRepository)
+        public BoardGamesController(ILogger<BoardGamesController> logger, 
+            IBoardGameRepository gameRepository, 
+            IGameStatisticsService gameStatisticsService)
         {
             _logger = logger;
             this.gameRepository = gameRepository;
-            this.gameStatisticRepository = gameStatisticRepository;
+            this.gameStatisticsService = gameStatisticsService;
         }
 
         public IActionResult Index(int? pageNumber, int? pageSize)
@@ -56,8 +60,7 @@ namespace GamesMS.Controllers
                 MinPlayerAge = game.MinPlayerAge,
                 MaxPlayersNumber = game.MaxPlayersNumber,
                 MinPlayersNumber = game.MinPlayersNumber,
-                Statistics = game.Statistics
-                    .Take(10)
+                Statistics = gameStatisticsService.GetStatistics()
                     .Select(s => new GameStatisticViewModel() { Source = s.Source.GetAttribute<DisplayAttribute>().Name, ViewedDate = s.ViewedDate })
                     .ToList()
             };
@@ -67,16 +70,7 @@ namespace GamesMS.Controllers
 
         private void UpdateStatistics(BoardGameRecord boardGameRecord)
         {
-            var statisticsRecord = new GameStatisticRecord() { Game = boardGameRecord, Source = Models.EntityViewSource.Application, ViewedDate = DateTime.Now };
-
-            var statistics = gameStatisticRepository.Query().ToList();
-
-            if(statistics.Count() > 10)
-            {
-                gameStatisticRepository.Delete(statistics.Last());
-            }
-
-            gameStatisticRepository.CreateOrUpdate(statisticsRecord);
+            gameStatisticsService.SaveStatistics(new GameStatistic() { GameId = boardGameRecord.Id, Source = EntityViewSource.Application, ViewedDate = DateTime.Now });
         }
 
         [HttpGet]

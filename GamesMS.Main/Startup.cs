@@ -3,6 +3,7 @@ using GamesMS.Core.Services.Internal;
 using GamesMS.Main.Services.Internal;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,6 +22,7 @@ namespace GamesMS.Main
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IMemoryCache, MemoryCache>();
             DependencyResolver.Resolve(services);
             var assembly = Assembly.Load("GamesMS.Api");
             services.AddControllersWithViews();

@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GamesMS.Core\GamesMS.Core.csproj" />
+    <ProjectReference Include="..\GamesMS.Data\GamesMS.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

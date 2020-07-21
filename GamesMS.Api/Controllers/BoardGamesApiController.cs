@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GamesMS.Api.Models;
 using GamesMS.Api.Services;
+using GamesMS.Data.Models;
+using GamesMS.Data.Services;
 using GamesMS.Records;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,14 +17,14 @@ namespace GamesMS.Api.Controllers
     {
         private readonly ILogger<BoardGamesApiController> _logger;
         private readonly IBoardGameRepository boardGameRepository;
-        private readonly IGameStatisticRepository gameStatisticRepository;
+        private readonly IGameStatisticsService gameStatisticsService;
         private readonly IRandomNameGeneratorService randomNameGeneratorService;
 
-        public BoardGamesApiController(ILogger<BoardGamesApiController> logger, IBoardGameRepository boardGameRepository, IGameStatisticRepository gameStatisticRepository, IRandomNameGeneratorService randomNameGeneratorService)
+        public BoardGamesApiController(ILogger<BoardGamesApiController> logger, IBoardGameRepository boardGameRepository, IGameStatisticsService gameStatisticsService, IRandomNameGeneratorService randomNameGeneratorService)
         {
             _logger = logger;
             this.boardGameRepository = boardGameRepository;
-            this.gameStatisticRepository = gameStatisticRepository;
+            this.gameStatisticsService = gameStatisticsService;
             this.randomNameGeneratorService = randomNameGeneratorService;
         }
 
@@ -65,9 +67,7 @@ namespace GamesMS.Api.Controllers
 
         private void UpdateStatistics(BoardGameRecord boardGameRecord)
         {
-            var statisticsRecord = new GameStatisticRecord() { Game = boardGameRecord, Source = GamesMS.Models.EntityViewSource.Webservice, ViewedDate = DateTime.Now };
-
-            gameStatisticRepository.CreateOrUpdate(statisticsRecord);
+            gameStatisticsService.SaveStatistics(new GameStatistic() { GameId = boardGameRecord.Id, Source = EntityViewSource.Webservice, ViewedDate = DateTime.Now });
         }
     }
 }

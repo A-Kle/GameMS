@@ -1,6 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
 using GamesMS.Core.Models;
-using System.Collections.Generic;
 
 namespace GamesMS.Records
 {
@@ -9,11 +8,6 @@ namespace GamesMS.Records
         public virtual int MaxPlayersNumber { get; set; }
         public virtual int MinPlayersNumber { get; set; }
         public virtual int MinPlayerAge { get; set; }
-
-        public BoardGameRecord()
-        {
-            Statistics = new List<GameStatisticRecord>();
-        }
     }
 
 
@@ -27,9 +21,6 @@ namespace GamesMS.Records
             Map(g => g.MaxPlayersNumber);
             Map(g => g.MinPlayersNumber);
             Map(g => g.MinPlayerAge);
-            HasMany(g => g.Statistics)
-                .Inverse().Cascade.AllDeleteOrphan()
-                .LazyLoad().KeyColumn("GameId");
         }
     }
 }

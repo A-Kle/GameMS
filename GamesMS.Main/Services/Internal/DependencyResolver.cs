@@ -13,6 +13,8 @@ namespace GamesMS.Main.Services.Internal
             var assemblies = new[] { Assembly.Load("GamesMS"), Assembly.Load("GamesMS.Api") }.ToList();
             assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith("GamesMS")));
+            assemblies.AddRange(assemblies.SelectMany(a => a.GetReferencedAssemblies().Select((aref) => Assembly.Load(aref))).ToList());
+            assemblies = assemblies.Distinct().ToList();
 
             var types = assemblies
                 .SelectMany(s => s.GetTypes());
