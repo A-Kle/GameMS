@@ -4,13 +4,15 @@ using GamesMS.Data.Models;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GamesMS.Data.Services
 {
     public interface IGameStatisticsService : IDependency
     {
-        IEnumerable<GameStatistic> GetStatistics();
-        void SaveStatistics(GameStatistic statistic);
+        IDictionary<int, FixedSizeFiloCollection<GameStatistic>> GetStatistics();
+        void SaveStatistics(int gameId, GameStatistic statistic);
+        IEnumerable<GameStatistic> GetStatisticsForGame(int gameId);
     }
 
     public class GameStatisticsService : IGameStatisticsService
@@ -22,13 +24,13 @@ namespace GamesMS.Data.Services
             this.memoryCache = memoryCache;
         }
 
-        public IEnumerable<GameStatistic> GetStatistics()
+        public IDictionary<int, FixedSizeFiloCollection<GameStatistic>> GetStatistics()
         {
-            FixedSizeFiloCollection<GameStatistic> statistics;
+            IDictionary<int, FixedSizeFiloCollection<GameStatistic>> statistics;
 
             if (!memoryCache.TryGetValue(GameStatisticsConsts.GamesStatisticsCacheKey, out statistics))
             {
-                statistics = new FixedSizeFiloCollection<GameStatistic>(GameStatisticsConsts.GamesStatisticsCollectionSize);
+                statistics = new Dictionary<int, FixedSizeFiloCollection<GameStatistic>>();
 
                 var cacheOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(24));
 
@@ -38,20 +40,33 @@ namespace GamesMS.Data.Services
             return statistics;
         }
 
-        public void SaveStatistics(GameStatistic statistic)
+        public IEnumerable<GameStatistic> GetStatisticsForGame(int gameId)
         {
-            FixedSizeFiloCollection<GameStatistic> statistics;
+            var statistics = GetStatistics();
+
+            if (!statistics.ContainsKey(gameId))
+                return Enumerable.Empty<GameStatistic>();
+            else
+                return statistics[gameId];
+        }
+
+        public void SaveStatistics(int gameId, GameStatistic statistic)
+        {
+            IDictionary<int, FixedSizeFiloCollection<GameStatistic>> statistics;
 
             if (!memoryCache.TryGetValue(GameStatisticsConsts.GamesStatisticsCacheKey, out statistics))
             {
-                statistics = new FixedSizeFiloCollection<GameStatistic>(GameStatisticsConsts.GamesStatisticsCollectionSize);
+                statistics = new Dictionary<int, FixedSizeFiloCollection<GameStatistic>>();
 
                 var cacheOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(24));
 
                 memoryCache.Set(GameStatisticsConsts.GamesStatisticsCacheKey, statistics, cacheOptions);
             }
 
-            statistics.Push(statistic); //ref updates in memory without set
+            if(!statistics.ContainsKey(gameId))
+                statistics.Add(gameId, new FixedSizeFiloCollection<GameStatistic>(GameStatisticsConsts.GamesStatisticsCollectionSize)); //ref updates in memory without set
+
+            statistics[gameId].Push(statistic);
         }
     }
 }

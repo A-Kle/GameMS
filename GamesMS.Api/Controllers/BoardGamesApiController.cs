@@ -67,7 +67,7 @@ namespace GamesMS.Api.Controllers
 
         private void UpdateStatistics(BoardGameRecord boardGameRecord)
         {
-            gameStatisticsService.SaveStatistics(new GameStatistic() { GameId = boardGameRecord.Id, Source = EntityViewSource.Webservice, ViewedDate = DateTime.Now });
+            gameStatisticsService.SaveStatistics(boardGameRecord.Id, new GameStatistic() { Source = EntityViewSource.Webservice, ViewedDate = DateTime.Now });
         }
     }
 }

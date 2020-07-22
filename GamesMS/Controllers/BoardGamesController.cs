@@ -60,7 +60,7 @@ namespace GamesMS.Controllers
                 MinPlayerAge = game.MinPlayerAge,
                 MaxPlayersNumber = game.MaxPlayersNumber,
                 MinPlayersNumber = game.MinPlayersNumber,
-                Statistics = gameStatisticsService.GetStatistics()
+                Statistics = gameStatisticsService.GetStatisticsForGame(game.Id)
                     .Select(s => new GameStatisticViewModel() { Source = s.Source.GetAttribute<DisplayAttribute>().Name, ViewedDate = s.ViewedDate })
                     .ToList()
             };
@@ -70,7 +70,7 @@ namespace GamesMS.Controllers
 
         private void UpdateStatistics(BoardGameRecord boardGameRecord)
         {
-            gameStatisticsService.SaveStatistics(new GameStatistic() { GameId = boardGameRecord.Id, Source = EntityViewSource.Application, ViewedDate = DateTime.Now });
+            gameStatisticsService.SaveStatistics(boardGameRecord.Id, new GameStatistic() { Source = EntityViewSource.Application, ViewedDate = DateTime.Now });
         }
 
         [HttpGet]
