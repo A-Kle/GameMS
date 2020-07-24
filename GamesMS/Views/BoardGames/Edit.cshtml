@@ -17,7 +17,7 @@
 }
 
 <div>
-    @using (Html.BeginForm("Create", "BoardGames", FormMethod.Post, new { novalidate = true, id = "create-form" }))
+    @using (Html.BeginForm("Edit", "BoardGames", FormMethod.Post, new { novalidate = true, id = "create-form" }))
     {
         <div class="form-group">
             @Html.LabelFor(model => model.Name, "Name")

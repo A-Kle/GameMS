@@ -9,7 +9,7 @@
         }
     </style>
 
-    var id = 0;
+    var id = 0 + ((Model.PageNumber - 1) * Model.PageSize);
 }
 <div style="float:left">
     <p style="font-weight:700">Page @Model.PageNumber</p>
